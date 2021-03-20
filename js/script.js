@@ -200,5 +200,60 @@ window.addEventListener('DOMContentLoaded', () => {
         16,
         ".menu .container"
     ).render();
+
+
+///Forms
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'Загрузка',
+        success: 'Спасибо!Мы скоро с Вами свяжемся',
+        failure: 'Что-то пошло не так'
+    }
+    forms.forEach(item => {
+        postData(item);
+    })
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();//отменяте стандартное поведение браузера.
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);//добавляем к форме сообщение о загрузке.
+
+            const request = new XMLHttpRequest(); //создаём запрос.
+            request.open('POST', 'server.php');//помещаем данные запроса.1.тип запроса 2.путь на который мы будем ссылаться.
+
+            // request.setRequestHeader('Content-type','multipart/data');// при связке запроса XMLHTTPRequest запроса и FormData заголовок устанавливается автоматом,поэтому здесь он не нужен
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            })
+            const json = JSON.stringify(object);
+
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();//очистка формы.
+                    setTimeout(() => {
+                        statusMessage.remove();//очистка сообщения.
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            })
+
+        })
+    }
 })
+
+
 
