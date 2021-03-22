@@ -1,4 +1,4 @@
-// 'use strict'
+'use strict'
 window.addEventListener('DOMContentLoaded', () => {
 //Tabs
     const tabs = document.querySelectorAll('.tabheader__item'),
@@ -124,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    const modalTimerId = setTimeout(openModal, 300000);
+    const modalTimerId = setTimeout(openModal, 3000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -225,31 +225,40 @@ window.addEventListener('DOMContentLoaded', () => {
             // form.append(statusMessage);//добавляем к форме сообщение о загрузке.
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest(); //создаём запрос.
-            request.open('POST', 'server.php');//помещаем данные запроса.1.тип запроса 2.путь на который мы будем ссылаться.
-
-            // request.setRequestHeader('Content-type','multipart/data');// при связке запроса XMLHTTPRequest запроса и FormData заголовок устанавливается автоматом,поэтому здесь он не нужен
-            request.setRequestHeader('Content-type', 'application/json');
             const formData = new FormData(form);
 
             const object = {};
             formData.forEach(function (value, key) {
                 object[key] = value;
             })
-            const json = JSON.stringify(object);
 
-            request.send(json);
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => data.text())
+                .then(data => {
+                    console.log(data);
                     showThanksModal(message.success);
-                    form.reset();//очистка формы.
-                    statusMessage.remove();//очистка сообщения.
-                } else {
-                    showThanksModal(message.failure);
-                }
+                    statusMessage.remove();
+                }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
             })
+
+            // request.addEventListener('load', () => {
+            //     if (request.status === 200) {
+            //         console.log(request.response);
+            //         showThanksModal(message.success);
+            //         form.reset();//очистка формы.
+            //         statusMessage.remove();//очистка сообщения.
+            //     } else {
+            //         showThanksModal(message.failure);
+            //     }
+            // })
 
         })
     }
@@ -273,7 +282,6 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModel();
         }, 4000);
     }
+
 })
-
-
 
