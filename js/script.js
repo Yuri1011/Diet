@@ -277,49 +277,110 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-// Slider
+// Sliders
     const slides = document.querySelectorAll('.offer__slide'),
         prev = document.querySelector('.offer__slider-prev'),
         next = document.querySelector('.offer__slider-next'),
         total = document.querySelector('#total'),
-        current = document.querySelector('#current');
-
+        current = document.querySelector('#current'),
+        slidesWrapper = document.querySelector('.offer__slider-wrapper'),//общая обертка над каруселью.
+        slidesField = document.querySelector('.offer__slider-inner'),//выстраивает внутри себя слайды.
+        width = window.getComputedStyle(slidesWrapper).width; // вытаскиваем из slidesWrapper свойство с его шириной.
     let slideIndex = 1;
+    let offset = 0;
 
-    showSlides(slideIndex);
-
+//variant hard 2
     if (slides.length < 10) {
         total.textContent = `0${slides.length}`;
+        current.textContent = `0${slideIndex}`;
     } else {
         total.textContent = slides.length;
+        current.textContent = slideIndex;
     }
+    slidesField.style.width = 100 * slides.length + '%';//умножаем 100% на количество слайдов тем самым выстраиваем нужную ширину строки в которой помещаются все наши слайды.
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
 
-    function showSlides(n) {
-        if (n > slides.length) {
+    slidesWrapper.style.overflow = 'hidden'; //убираем всё что за пределами обёртки.
+
+
+    slides.forEach(slide => {//устанавливаем каждому слайдеру равную ширину,чтобы они четко помещались в slidesField.
+        slide.style.width = width;
+    })
+
+    next.addEventListener('click', () => {
+        if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex == slides.length) {
             slideIndex = 1;
+        } else {
+            slideIndex++;
         }
-        if (n < 1) {
-            slideIndex = slides.length;
-        }
-        slides.forEach(slid => slid.style.display = 'none');
-        slides[slideIndex - 1].style.display = 'block';
-
         if (slides.length < 10) {
             current.textContent = `0${slideIndex}`;
         } else {
             current.textContent = slideIndex;
         }
-    }
 
-    function plusSlides(n) {
-        showSlides(slideIndex += n);
-    }
-
+    })
     prev.addEventListener('click', () => {
-        plusSlides(-1);
+        if (offset == 0) {
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1)
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+        if (slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
     })
-    next.addEventListener('click', () => {
-        plusSlides(1);
-    })
+//variant easy 1
+    // showSlides(slideIndex);
+    //
+    // if (slides.length < 10) {
+    //     total.textContent = `0${slides.length}`;
+    // } else {
+    //     total.textContent = slides.length;
+    // }
+    //
+    // function showSlides(n) {
+    //     if (n > slides.length) {
+    //         slideIndex = 1;
+    //     }
+    //     if (n < 1) {
+    //         slideIndex = slides.length;
+    //     }
+    //     slides.forEach(slid => slid.style.display = 'none');
+    //     slides[slideIndex - 1].style.display = 'block';
+    //
+    //     if (slides.length < 10) {
+    //         current.textContent = `0${slideIndex}`;
+    //     } else {
+    //         current.textContent = slideIndex;
+    //     }
+    // }
+    //
+    // function plusSlides(n) {
+    //     showSlides(slideIndex += n);
+    // }
+    //
+    // prev.addEventListener('click', () => {
+    //     plusSlides(-1);
+    // })
+    // next.addEventListener('click', () => {
+    //     plusSlides(1);
+    // })
 })
 
