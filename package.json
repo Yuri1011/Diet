@@ -2,7 +2,7 @@
   "name": "diet",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +15,6 @@
   "bugs": {
     "url": "https://github.com/Yuri1011/Diet/issues"
   },
-  "homepage": "https://github.com/Yuri1011/Diet#readme",
   "devDependencies": {
     "json-server": "^0.16.3",
     "webpack": "^5.28.0",
@@ -101,6 +100,7 @@
     "function-bind": "^1.1.1",
     "get-caller-file": "^2.0.5",
     "get-stream": "^4.1.0",
+    "gh-pages": "^3.1.0",
     "glob-to-regexp": "^0.4.1",
     "global-dirs": "^3.0.0",
     "got": "^9.6.0",
