@@ -43,12 +43,12 @@ function cards() {
         }
     }
 
-    // getResource('http://localhost:3000/menu')
-    getResource('https://github.com/Yuri1011/Diet/blob/master/db.json/menu').then(data => {
-        data.forEach(({img, altimg, title, descr, price}) => {
-            new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+            });
         });
-    });
 
 }
 
