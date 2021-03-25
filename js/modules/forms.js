@@ -1,7 +1,9 @@
 ///Forms
+import {closeModal, openModal} from './modal';
+import {postData} from '../services/services';
 
-function forms() {
-    const forms = document.querySelectorAll('form');
+function forms(selectorForm, modalTimerId) {
+    const forms = document.querySelectorAll(selectorForm);
 
     const message = {
         loading: 'img/spiner/spinner.svg',
@@ -11,16 +13,6 @@ function forms() {
     forms.forEach(item => {
         bindPostData(item);
     })
-    const postData = async (url, data) => {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: data
-        });
-        return await res.json();
-    }
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -32,15 +24,11 @@ function forms() {
                     display: block;
                     margin: 0 auto;
             `;
-            // form.append(statusMessage);//добавляем к форме сообщение о загрузке.
+
             form.insertAdjacentElement('afterend', statusMessage);
 
             const formData = new FormData(form);
 
-            // const object = {};
-            // formData.forEach(function (value, key) { //преобразуем в объект
-            //     object[key] = value;
-            // })
             const json = JSON.stringify(Object.fromEntries(formData.entries())); // также преобразуем в объект и затем в json
 
             postData('http://localhost:3000/requests', json)
@@ -54,25 +42,13 @@ function forms() {
                 form.reset();
             })
 
-
-            // request.addEventListener('load', () => {
-            //     if (request.status === 200) {
-            //         console.log(request.response);
-            //         showThanksModal(message.success);
-            //         form.reset();//очистка формы.
-            //         statusMessage.remove();//очистка сообщения.
-            //     } else {
-            //         showThanksModal(message.failure);
-            //     }
-            // })
-
         })
     }
 
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
         prevModalDialog.classList.add('hide');
-        openModal();
+        openModal('.modal', modalTimerId);
 
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
@@ -85,9 +61,9 @@ function forms() {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();
-        }, 4000);
+            closeModal('.modal');
+        }, 3000);
     }
 }
 
-module.exports = forms;
+export default forms;
